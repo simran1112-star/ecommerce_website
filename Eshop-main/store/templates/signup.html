@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <div class="p-3 m-3">
+        <div class="col-lg-6 rounded mx-auto border pt-4" style="border: 2px solid #674ab3; border-radius: 15px;">
+            <div class="text-center col">
+                <img src="{% static 'img/no-profile-picture-icon.png' %}" alt="" class="img-fluid" style="height: 150px;">
+
+                <hr>
+            </div>
+            <h3 class="alert alert-success rounded-pill text-center" style="background-color: #674ab3; color: white;">Create an Account</h3>
+            <form action="/signup" method="POST">
+                {% csrf_token %}
+                {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                {% endif %}
+                <!-- firstname -->
+                <div class="form-group">
+                    <label for="firstname" style="color: #674ab3;">First Name</label>
+                    <input type="text" name="firstname" id="firstname" value="{{ values.first_name }}"
+                        class="form-control" placeholder="John" style="border-color: #674ab3;">
+                </div>
+                <!-- last name -->
+                <div class="form-group">
+                    <label for="lastname" style="color: #674ab3;">Last Name</label>
+                    <input type="text" name="lastname" id="lastname" value="{{ values.last_name }}"
+                        class="form-control" placeholder="Doe" style="border-color: #674ab3;">
+                </div>
+                <!-- phone -->
+                <div class="form-group">
+                    <label for="phone" style="color: #674ab3;">Phone</label>
+                    <input type="text" name="phone" id="phone" class="form-control" value="{{ values.phone }}"
+                        placeholder="9876543210" style="border-color: #674ab3;">
+                </div>
+                <!-- email -->
+                <div class="form-group">
+                    <label for="email" style="color: #674ab3;">Email</label>
+                    <input required type="email" name="email" id="email" value="{{ values.email }}"
+                        class="form-control" placeholder="abc@gmail.com" style="border-color: #674ab3;">
+                </div>
+                <!-- password -->
+                <div class="form-group">
+                    <label for="password" style="color: #674ab3;">Password</label>
+                    <input type="password" name="password" id="password" class="form-control" style="border-color: #674ab3;">
+                </div>
+                <!-- password confirmation (optional) -->
+                <div class="form-group">
+                    <label for="password_confirmation" style="color: #674ab3;">Confirm Password</label>
+                    <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" style="border-color: #674ab3;">
+                </div>
+                <!-- Checkme button -->
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label d-grid gap-2" for="exampleCheck1" style="color: #674ab3;">Subscribe to our newsletter</label>
+                </div>
+                <hr>
+                <button type="submit" class="btn btn-success btn-block" style="background-color: #674ab3;">Create an account</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

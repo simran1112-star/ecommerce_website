@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% block css%}
+<style>
+  /* Global Styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+  }
+
+  a {
+    text-decoration: none;
+    color: #674ab3;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+    line-height: 1.5;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Product Card Styles */
+  .product-card {
+    position: relative;
+    width: 18rem;
+    height: 18rem;
+    margin: 1em auto;
+    border: 2px solid #674ab3;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-out;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-card img {
+    width: 100%;
+    height: 50%;
+    object-fit: cover;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+  }
+
+  .product-card .info {
+    flex-grow: 1;
+    padding: 1em;
+    background-color: #674ab3;
+    color: white;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-card .info h2 {
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .product-card .info span {
+    font-size: 1.2em;
+    opacity: 0.8;
+  }
+
+  .product-card button {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 1em;
+    font-size: 1.5em;
+    color: white;
+    transition: transform 0.3s ease-out;
+    align-self: flex-end;
+  }
+
+  .product-card:hover {
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    .product-card {
+      width: calc(100% / 2 - 1em);
+    }
+  }
+
+  @media (max-width: 576px) {
+    .product-card {
+      width: 100%;
+    }
+    
+  
+  }
+  
+</style>
+{%endblock%}
+
+{% block content %}
+
+{% load cart %}
+{% load custom_filter %}
+
+<!-- body -->
+<div class="container-fluid mt-3">
+    <div class="row">
+
+        <!-- all products -->
+        <div id='products' class="col-lg-9 mx-auto">
+            <div class="row mx-auto">
+                {% for product in products %}
+                <div class="card mx-auto mb-3" id="{{product.id}}" style="width: 18rem; border: 2px solid #674AB3; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <center><img class="card-img-top" src="{{product.image.url}}" alt="Card image cap" style="width: 100px; border-radius: 50%;"></center>
+                    <div class="card-body">
+                        <p class="card-title" style="font-weight: bold; color: #674AB3;">{{product.name}}</p>
+                        <p class="card-text" style="color: #333;">Price: <b>{{product.price|currency}}</b></p>
+                    </div>
+
+                    <div class="card-footer p-0 no-gutters" style="background-color: #674AB3; color: #fff; border-radius: 0 0 15px 15px;">
+
+                        {% if product|is_in_cart:request.session.cart %}
+                        <div class="row no-gutters">
+                            <form action="/#{{product.id}}" class="col-2 " method="post">
+                                {% csrf_token %}
+                                <input hidden type="text" name='product' value='{{product.id}}'>
+                                <input hidden type="text" name='remove' value='True'>
+                                <input type="submit" value=" - " class="btn btn-block btn-light border-right" style="background-color: #fff; color: #674AB3;">
+                            </form>
+                            <div class="text-center col btn btn-light" style="background-color: #fff; color: #674AB3;">{{product|cart_quantity:request.session.cart}} in Cart</div>
+                            <form action="/#{{product.id}}" class="col-2 " method="post">
+                                {% csrf_token %}
+                                <input hidden type="text" name='product' value='{{product.id}}'>
+                                <input type="submit" value=" + " class="btn btn-block btn-light border-left" style="background-color: #fff; color: #674AB3;">
+                            </form>
+                        </div>
+                        {% else %}
+                        <form action="/#{{product.id}}" method="POST" class="btn-block">
+                            {% csrf_token %}
+                            <input hidden type="text" name='product' value='{{product.id}}'>
+                            <input type="submit" class="float-right btn btn-light form-control" style="background-color: #fff; color: #674AB3;"
+                                value="Add To Cart">
+                        </form>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
