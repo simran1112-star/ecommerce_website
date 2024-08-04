@@ -1,6 +1,7 @@
 from django.shortcuts import render , redirect , HttpResponseRedirect
 from store.models.product import Products
 from store.models.category import Category
+from store.models.Subcategory import Subcategory
 from django.views import View
 
 
@@ -11,6 +12,7 @@ class Index(View):
         product = request.POST.get('product')
         remove = request.POST.get('remove')
         cart = request.session.get('cart')
+        print(cart)
         if cart:
             quantity = cart.get(product)
             if quantity:
@@ -35,26 +37,52 @@ class Index(View):
 
 
     def get(self , request):
-        # print()
+        print(f"currently at: {request.get_full_path()[1:]}")
+
         return HttpResponseRedirect(f'/store{request.get_full_path()[1:]}')
-
 def store(request):
-    cart = request.session.get('cart')
-    if not cart:
-        request.session['cart'] = {}
-    products = None
+    cart = request.session.get('cart', {})
     categories = Category.get_all_categories()
-    categoryID = request.GET.get('category')
-    if categoryID:
-        products = Products.get_all_products_by_categoryid(categoryID)
+    subcategories = Subcategory.get_all_subcategories()
+    selected_category_id = request.GET.get('category')
+    selected_subcategory_id = request.GET.get('subcategory')
+
+    template_name = 'index.html'
+
+    if selected_subcategory_id:
+        key=False
+        products = Products.get_all_products_by_subcategory_id(selected_subcategory_id)
+        data = {
+            'products': products,
+            'categories': categories,
+            'subcategories': subcategories,
+            'selected_category_id': selected_category_id,
+            'selected_subcategory_id': selected_subcategory_id,
+            'cart': cart,
+        }
+        return render(request, template_name, data)
+
+    elif selected_category_id:
+        key=False
+        products = Products.get_all_products_by_categoryid(selected_category_id)
     else:
-        products = Products.get_all_products();
+        key=True
+        products = []
 
-    data = {}
-    data['products'] = products
-    data['categories'] = categories
+    print('Selected Category ID:', selected_category_id)
+    print('Selected Subcategory ID:', selected_subcategory_id)
+    print('Number of Products:', len(products))
+    print(products)
 
-    print('you are : ', request.session.get('email'))
-    return render(request, 'index.html', data)
+    data = {
+        "key":key,
+        'products': products,
+        'categories': categories,
+        'subcategories': subcategories,
+        'selected_category_id': selected_category_id,
+        'selected_subcategory_id': selected_subcategory_id,
+        'cart': cart,
+    }
 
-
+    print('you are:', request.session.get('email'))
+    return render(request, template_name, data)

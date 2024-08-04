@@ -1,5 +1,4 @@
-{% extends 'base.html' %}
-{% block css%}
+{% extends 'base.html' %} {% block css%}
 <style>
   /* Global Styles */
   * {
@@ -9,7 +8,7 @@
   }
 
   body {
-    font-family: 'Arial', sans-serif;
+    font-family: "Arial", sans-serif;
     background-color: #f0f0f0;
     color: #333;
   }
@@ -19,7 +18,12 @@
     color: #674ab3;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-weight: normal;
     line-height: 1.5;
   }
@@ -102,66 +106,81 @@
     .product-card {
       width: 100%;
     }
-    
-  
   }
-  
 </style>
-{%endblock%}
-
-{% block content %}
-
-{% load cart %}
-{% load custom_filter %}
+{%endblock%} {% block content %} {% load cart %} {% load custom_filter %}
 
 <!-- body -->
 <div class="container-fluid mt-3">
-    <div class="row">
+  <div class="row">
+    <!-- all products -->
+    <div id="products" class="col-lg-9 mx-auto">
+      <div class="row mx-auto">
+        {%if products %} {% for product in products %}
+        <div class="card mx-auto mb-3" id="{{product.id}}" style="width: 18rem">
+          <img
+            class="card-img-top"
+            src="{{product.image.url}}"
+            alt="Card image cap"
+          />
+          <div class="card-body">
+            <p class="card-title">{{product.name}}</p>
+            <p class="card-text"><b>{{product.price|currency}}</b></p>
+          </div>
 
-        <!-- all products -->
-        <div id='products' class="col-lg-9 mx-auto">
-            <div class="row mx-auto">
-                {% for product in products %}
-                <div class="card mx-auto mb-3" id="{{product.id}}" style="width: 18rem; border: 2px solid #674AB3; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                    <center><img class="card-img-top" src="{{product.image.url}}" alt="Card image cap" style="width: 100px; border-radius: 50%;"></center>
-                    <div class="card-body">
-                        <p class="card-title" style="font-weight: bold; color: #674AB3;">{{product.name}}</p>
-                        <p class="card-text" style="color: #333;">Price: <b>{{product.price|currency}}</b></p>
-                    </div>
-
-                    <div class="card-footer p-0 no-gutters" style="background-color: #674AB3; color: #fff; border-radius: 0 0 15px 15px;">
-
-                        {% if product|is_in_cart:request.session.cart %}
-                        <div class="row no-gutters">
-                            <form action="/#{{product.id}}" class="col-2 " method="post">
-                                {% csrf_token %}
-                                <input hidden type="text" name='product' value='{{product.id}}'>
-                                <input hidden type="text" name='remove' value='True'>
-                                <input type="submit" value=" - " class="btn btn-block btn-light border-right" style="background-color: #fff; color: #674AB3;">
-                            </form>
-                            <div class="text-center col btn btn-light" style="background-color: #fff; color: #674AB3;">{{product|cart_quantity:request.session.cart}} in Cart</div>
-                            <form action="/#{{product.id}}" class="col-2 " method="post">
-                                {% csrf_token %}
-                                <input hidden type="text" name='product' value='{{product.id}}'>
-                                <input type="submit" value=" + " class="btn btn-block btn-light border-left" style="background-color: #fff; color: #674AB3;">
-                            </form>
-                        </div>
-                        {% else %}
-                        <form action="/#{{product.id}}" method="POST" class="btn-block">
-                            {% csrf_token %}
-                            <input hidden type="text" name='product' value='{{product.id}}'>
-                            <input type="submit" class="float-right btn btn-light form-control" style="background-color: #fff; color: #674AB3;"
-                                value="Add To Cart">
-                        </form>
-                        {% endif %}
-
-                    </div>
-
-                </div>
-                {% endfor %}
+          <div class="card-footer p-0 no-gutters">
+            {% if product|is_in_cart:request.session.cart %}
+            <div class="row no-gutters">
+              <form action="/#{{product.id}}" class="col-2" method="post">
+                {% csrf_token %}
+                <input
+                  hidden
+                  type="text"
+                  name="product"
+                  value="{{product.id}}"
+                />
+                <input hidden type="text" name="remove" value="True" />
+                <input
+                  type="submit"
+                  value=" - "
+                  class="btn btn-block btn-success border-right"
+                />
+              </form>
+              <div class="text-center col btn btn-success">
+                {{product|cart_quantity:request.session.cart}} in Cart
+              </div>
+              <form action="/#{{product.id}}" class="col-2" method="post">
+                {% csrf_token %}
+                <input
+                  hidden
+                  type="text"
+                  name="product"
+                  value="{{product.id}}"
+                />
+                <input
+                  type="submit"
+                  value=" + "
+                  class="btn btn-block btn-success border-left"
+                />
+              </form>
             </div>
+            {% else %}
+            <form action="/#{{product.id}}" method="POST" class="btn-block">
+              {% csrf_token %}
+              <input hidden type="text" name="product" value="{{product.id}}" />
+              <input
+                type="submit"
+                class="float-right btn btn-success form-control"
+                value="Add To Cart"
+              />
+            </form>
+            {% endif %}
+          </div>
         </div>
+        {% endfor %} {% endif %}
+      </div>
     </div>
+  </div>
 </div>
 
 {% endblock %}

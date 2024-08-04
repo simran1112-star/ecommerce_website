@@ -11,6 +11,13 @@ class OrderView(View):
 
     def get(self , request ):
         customer = request.session.get('customer')
+        print(customer)
         orders = Order.get_orders_by_customer(customer)
-        print(orders)
+        print("ye rahe orders:",orders)
         return render(request , 'orders.html'  , {'orders' : orders})
+    def post(self, request):
+        ids = list(request.session.get('cart').keys())
+        print(ids)
+        products = Products.get_products_by_id(ids)
+        print("adsfas",products)
+        return redirect("orders")

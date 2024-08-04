@@ -15,6 +15,7 @@ class Signup (View):
         phone = postData.get ('phone')
         email = postData.get ('email')
         password = postData.get ('password')
+        print("fasdasefdaefdsv")
         # validation
         value = {
             'first_name': first_name,
@@ -24,11 +25,7 @@ class Signup (View):
         }
         error_message = None
 
-        customer = Customer (first_name=first_name,
-                             last_name=last_name,
-                             phone=phone,
-                             email=email,
-                             password=password)
+        customer = Customer (first_name=first_name,last_name=last_name,phone=phone,email=email,password=password)
         error_message = self.validateCustomer (customer)
 
         if not error_message:

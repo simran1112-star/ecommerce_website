@@ -12,4 +12,23 @@ class Cart(View):
         products = Products.get_products_by_id(ids)
         print(products)
         return render(request , 'cart.html' , {'products' : products} )
+    
+
+
+class Payment(View):
+    def get(self , request):
+        ids = list(request.session.get('cart').keys())
+        print(ids)
+        products = Products.get_products_by_id(ids)
+        print(products)
+        return render(request , 'payment.html' , {'products' : products} )
+    def post(self , request):
+        ids = list(request.session.get('cart').keys())
+        print(ids)
+        products = Products.get_products_by_id(ids)
+        print(products)
+        return render(request , 'payment.html' , {'products' : products} )
+   
+    
+
 
